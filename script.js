@@ -37,7 +37,25 @@ if (form && success) {
     const alertBox = form.querySelector("[data-form-alert]");
     const submitButton = form.querySelector("[data-submit]");
     const buttonLabel = submitButton.querySelector(".button-label");
-    const defaultLabel = buttonLabel.textContent;
+    let defaultLabel = buttonLabel.textContent;
+    const nameLabel = form.querySelector("[data-name-label]");
+
+    const roleInputs = [...form.querySelectorAll("[data-role]")];
+    const ROLE_COPY = {
+        user: { cta: "احجز اشتراكك المجاني", name: "الاسم" },
+        provider: { cta: "أرسل طلب انضمام", name: "اسم المنشأة" },
+    };
+
+    function applyRole() {
+        const active = roleInputs.find((input) => input.checked);
+        const copy = ROLE_COPY[active?.dataset.role] || ROLE_COPY.user;
+        defaultLabel = copy.cta;
+        buttonLabel.textContent = copy.cta;
+        if (nameLabel) nameLabel.textContent = copy.name;
+    }
+
+    roleInputs.forEach((input) => input.addEventListener("change", applyRole));
+    applyRole();
 
     const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
     const ARABIC_DIGITS = /[\u0660-\u0669\u06F0-\u06F9]/g;
